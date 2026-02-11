@@ -93,8 +93,9 @@ function reconnect() {
 function fetchAndConnect() {
   debug.log('fetchAndConnect')
   // Fetch new notifications
-  fetchNotifications()
-    .done((success) => {
+  const fetchPromise = fetchNotifications()
+  if (fetchPromise && typeof fetchPromise.done === 'function') {
+    fetchPromise.done((success) => {
       if (success !== false) {
         debug.log('Connect to WebSocket')
         maxLoginFailsExceeded = false
@@ -102,7 +103,7 @@ function fetchAndConnect() {
         connectToWS()
       }
     })
-
+  }
 }
 
 function offline() {
@@ -120,6 +121,10 @@ function offline() {
 function connectToWS() {
   // Connect and get instance
   wsClient = connectWS()
+  if (!wsClient) {
+    debug.log('Could not connect to WebSocket')
+    return
+  }
   wsClient.on('notification', fetchNotifications)
   wsClient.on('error', offline)
   wsClient.on('loginFailed', () => {

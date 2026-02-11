@@ -275,7 +275,7 @@ OpenClient.prototype.fetchNotifications = function(optionsOverride, callback) {
 
 		request.get({
 			url: messageUrl,
-			form: urlData
+			qs: urlData
 		}, function(err, httpResponse, body) {
 			if (err) {
 				var errorDesc = 'Fetch notification request failed'
@@ -348,7 +348,7 @@ OpenClient.prototype.acknowledgeNotification = function(optionsOverride, callbac
 
 		request.post({
 			url: acknUrl,
-			formData: formData
+			form: formData
 		}, function(err, httpResponse, body) {
 			if (err) {
 				var errorDesc = 'Acknowledge notification request failed'

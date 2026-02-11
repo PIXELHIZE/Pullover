@@ -39,13 +39,14 @@ class NotificationDB extends EventEmitter {
   }
 
   add(notification) {
+    const doc = Object.assign({}, notification)
     return new Promise((resolve, reject) => {
       // Store the original id(unique to this device only!!), but make clear it's
       // not the identifier (nedb will generate one for us: _id)
-      notification.originalId = notification.id
-      delete notification.id
+      doc.originalId = doc.id
+      delete doc.id
       // Store notification
-      this.notificationDB.insert(notification, (err, newDoc) => {
+      this.notificationDB.insert(doc, (err, newDoc) => {
         if (err) {
           debug.log('Error in addNotifications', err)
           reject({

@@ -18,7 +18,7 @@ const stableRepoUrl = 'https://raw.githubusercontent.com/cgrossde/Pullover/maste
 const developRepoUrl = 'https://raw.githubusercontent.com/cgrossde/Pullover/develop/src/package.json'
 const userAgent = 'Pullover/' + packageInfo.version + ' (' + os.platform() + ' '
   + os.arch() + ' ' + os.release() + ')'
-request.defaults({
+const configuredRequest = request.defaults({
   headers: { 'User-Agent': userAgent }
 })
 
@@ -66,14 +66,19 @@ function fetchRemotePackageInfo(callback) {
   if (packageInfo.version.match(/\-(alpha|beta|rc)\./) !== null)
     repoUrl = developRepoUrl
   // Run check and return promise
-  request.get(repoUrl, (err, httpResponse, body) => {
+  configuredRequest.get(repoUrl, (err, httpResponse, body) => {
     if (err)
       debug.log('Update check failed', err, err.stack)
     if (body !== undefined && body !== '') {
-      var remotePackageInfo = JSON.parse(body)
-      if (remotePackageInfo !== undefined) {
-        remotePackageInfoCache = remotePackageInfo
-        return callback(null, remotePackageInfo)
+      try {
+        var remotePackageInfo = JSON.parse(body)
+        if (remotePackageInfo !== undefined) {
+          remotePackageInfoCache = remotePackageInfo
+          return callback(null, remotePackageInfo)
+        }
+      } catch (e) {
+        debug.log('Failed to parse remote package info', e)
+        return callback(e, null)
       }
     }
     return callback(new Error('Update check failed'), null)

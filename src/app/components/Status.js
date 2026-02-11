@@ -21,7 +21,7 @@ class Status extends React.Component {
   componentDidMount() {
     Analytics.page('Status')
     // Rerender every 30 sec to update time since last sync
-    const refreshInterval = setInterval(this.render.bind(this), 1000 * 30)
+    const refreshInterval = setInterval(() => this.forceUpdate(), 1000 * 30)
     this.setState({
       refreshInterval: refreshInterval
     })
