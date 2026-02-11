@@ -22,6 +22,7 @@ class DeviceRegistration extends React.Component {
     }
     this.onChangeName = this.onChangeName.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.logout = this.logout.bind(this)
   }
 
   componentDidMount() {
@@ -112,7 +113,8 @@ class DeviceRegistration extends React.Component {
     }
   }
 
-  logout() {
+  logout(e) {
+    if (e) e.preventDefault()
     store.dispatch(logout())
   }
 }
